@@ -1,7 +1,7 @@
 # Учебный проект «Код и Магия» [![Build status][travis-image]][travis-url]
 
 * Студент: [Юра Зеленский](https://up.htmlacademy.ru/javascript/16/user/54729).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Осипов](https://up.htmlacademy.ru/javascript/16/user/868661).
 
 ---
 
