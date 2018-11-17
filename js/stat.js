@@ -1,26 +1,29 @@
 'use strict';
 
 var myVars = {
-  CLOUD_HEIGHT: 270,
-  CLOUD_WIDTH: 420,
+  cloudHeigth: 270,
+  cloudWidth: 420,
+  cloudPositionX: 100,
+  cloudPositionY: 10,
+  cloudPadding: 30,
+  renderCloud: function (ctx, x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, this.cloudWidth, this.cloudHeigth);
+  },
+
   message: ['Ура вы победили!', 'Список результатов:'],
   messageFontSize: 16,
   messageFontFamily: 'PT Mono',
   getMessageFont: function () {
     return (this.messageFontSize + 'px ' + this.messageFontFamily);
   },
-  cloudPositionX: 100,
-  cloudPositionY: 10,
-  cloudPadding: 30,
-  renderCloud: function (ctx, x, y, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x, y, this.CLOUD_WIDTH, this.CLOUD_HEIGHT);
-  },
+
   playerColor: 0,
   otherColor: 240,
   getColor: function (color, saturation) {
     return ('hsl(' + color + ', ' + saturation + '%, 50%)');
   },
+
   columnWidth: 40,
   columnHeight: 150,
   columnMargin: 50
@@ -43,13 +46,13 @@ window.renderStatistics = function (ctx, names, times) {
   });
 
   maxTime = times.reduce(function (max, element) {
-    return element > max ? element : max;
-  });
+    return Math.max(max, element);
+  }, times[0]);
 
   for (i = 0; i < count; i += 1) {
     (function () {
       var x = myVars.cloudPositionX + myVars.cloudPadding + i * (myVars.columnMargin + myVars.columnWidth);
-      var y = myVars.cloudPositionY + myVars.CLOUD_HEIGHT - myVars.cloudPadding / 2;
+      var y = myVars.cloudPositionY + myVars.cloudHeigth - myVars.cloudPadding / 2;
       var time = Math.round(times[i]);
       var timeHeight = Math.round(time * myVars.columnHeight / maxTime);
 
