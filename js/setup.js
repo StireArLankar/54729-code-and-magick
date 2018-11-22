@@ -1,53 +1,86 @@
 'use strict';
 
-var mySetUp = {
-  setUpBlock: document.querySelector('.setup'),
-  similar: document.querySelector('.setup-similar'),
-  similarList: document.querySelector('.setup-similar-list'),
-  wizardTemplate: document.querySelector('#similar-wizard-template')
-                  .content
-                  .querySelector('.setup-similar-item'),
-  fragment: document.createDocumentFragment(),
-  wizardCount: 4,
-  getRandomElement: function (array) {
-    return array[Math.floor(Math.random() * array.length)];
+// config definitions block
+var config = {
+  wizardsCount: 4,
+  data: {
+    firstNames: ['Иван', 'Хуан', 'Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
+    lastNames: ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'],
+    coatColors: ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'],
+    eyesColors: ['black', 'red', 'blue', 'yellow', 'green'],
   },
-
-  firstNameArray: ['Иван', 'Хуан', 'Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'],
-  lastNameArray: ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'],
-  getName: function () {
-    var firstName = this.getRandomElement(this.firstNameArray);
-    var lastName = this.getRandomElement(this.lastNameArray);
-    var coin = Math.random();
-    return coin > 0.5 ? firstName + ' ' + lastName : lastName + ' ' + firstName;
-  },
-
-  coatColorArray: ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'],
-  getCoatColor: function () {
-    return this.getRandomElement(this.coatColorArray);
-  },
-
-  eyesColorArray: ['black', 'red', 'blue', 'yellow', 'green'],
-  getEyesColor: function () {
-    return this.getRandomElement(this.eyesColorArray);
-  },
-
-  renderWizard: function () {
-    var wizard = this.wizardTemplate.cloneNode(true);
-    var name = this.getName().trim();
-    var coatColor = this.getCoatColor();
-    var eyesColor = this.getEyesColor();
-    wizard.querySelector('.setup-similar-label').textContent = name;
-    wizard.querySelector('.wizard-coat').style.fill = coatColor;
-    wizard.querySelector('.wizard-eyes').style.fill = eyesColor;
-    return wizard;
+  selectors: {
+    setUpBlock: '.setup',
+    similar: '.setup-similar',
+    similarList: '.setup-similar-list',
+    template: '#similar-wizard-template'
   }
 };
 
-for (var i = 0; i < mySetUp.wizardCount; i += 1) {
-  mySetUp.fragment.appendChild(mySetUp.renderWizard());
-}
-mySetUp.similarList.appendChild(mySetUp.fragment);
+config.elements = (function () {
+  var obj = {};
+  for (var selector in config.selectors) {
+    if (config.selectors.hasOwnProperty(selector)) {
+      obj[selector] = document.querySelector(config.selectors[selector]);
+    }
+  }
+  return obj;
+})();
 
-mySetUp.setUpBlock.classList.remove('hidden');
-mySetUp.similar.classList.remove('hidden');
+config.elements.wizardTemplate = config
+                                .elements
+                                .template
+                                .content
+                                .querySelector('.setup-similar-item');
+
+
+// functions definitions block
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function getName() {
+  var firstName = getRandomElement(config.data.firstNames);
+  var lastName = getRandomElement(config.data.lastNames);
+  var coin = Math.random();
+  return coin > 0.5 ? firstName + ' ' + lastName : lastName + ' ' + firstName;
+}
+
+function getCoatColor() {
+  return getRandomElement(config.data.coatColors);
+}
+
+function getEyesColor() {
+  return getRandomElement(config.data.eyesColors);
+}
+
+function renderWizard() {
+  var wizard = config.elements.wizardTemplate.cloneNode(true);
+  var name = getName().trim();
+  var coatColor = getCoatColor();
+  var eyesColor = getEyesColor();
+  wizard.querySelector('.setup-similar-label').textContent = name;
+  wizard.querySelector('.wizard-coat').style.fill = coatColor;
+  wizard.querySelector('.wizard-eyes').style.fill = eyesColor;
+  return wizard;
+}
+
+function renderWizards(wizardsCount) {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < wizardsCount; i += 1) {
+    fragment.appendChild(renderWizard());
+  }
+  config.elements.similarList.appendChild(fragment);
+}
+
+function clear() {
+  config.elements.setUpBlock.classList.remove('hidden');
+  config.elements.similar.classList.remove('hidden');
+}
+
+function setup() {
+  clear();
+  renderWizards(config.wizardsCount);
+}
+
+setup();
