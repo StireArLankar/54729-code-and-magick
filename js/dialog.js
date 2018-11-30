@@ -1,4 +1,7 @@
-(function (config) {
+'use strict';
+
+(function () {
+  var config = window.config;
   var block = config.elements.setup.root;
   var handler = config.elements.setup.upload;
 
@@ -22,7 +25,7 @@
       start = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
-      }
+      };
 
       block.style.left = (block.offsetLeft - shift.x) + 'px';
       block.style.top = (block.offsetTop - shift.y) + 'px';
@@ -50,4 +53,4 @@
 
   handler.addEventListener('mousedown', onMouseDown);
 
-})(config);
+})();
