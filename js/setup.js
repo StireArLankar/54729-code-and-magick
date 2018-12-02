@@ -20,6 +20,7 @@ var config = {
       form: '.setup-wizard-form',
       open: '.setup-open-icon',
       close: '.setup-close',
+      upload: '.upload',
       input: '.setup-user-name',
       submit: '.setup-submit',
       similar: '.setup-similar',
@@ -119,6 +120,8 @@ function setup() {
 
 function openPopup() {
   config.elements.setup.root.classList.remove('hidden');
+  config.elements.setup.root.style.left = '';
+  config.elements.setup.root.style.top = '';
   document.addEventListener('keydown', onPopupEscPress);
 }
 
@@ -170,18 +173,33 @@ config.elements.setup.submit.addEventListener('keydown', function (evt) {
 });
 
 config.elements.setup.wizardCoat.addEventListener('click', function () {
+  var coat = config.elements.setup.wizardCoat;
   var coatColor = getCoatColor();
-  config.elements.setup.wizardCoat.style.fill = coatColor;
+  while (coat.style.fill === coatColor) {
+    coatColor = getCoatColor();
+  }
+
+  coat.style.fill = coatColor;
 });
 
 config.elements.setup.wizardEyes.addEventListener('click', function () {
+  var eyes = config.elements.setup.wizardEyes;
   var eyesColor = getEyesColor();
-  config.elements.setup.wizardEyes.style.fill = eyesColor;
+  while (eyes.style.fill === eyesColor) {
+    eyesColor = getEyesColor();
+  }
+
+  eyes.style.fill = eyesColor;
 });
 
 config.elements.setup.fireball.addEventListener('click', function () {
+  var fireball = config.elements.setup.fireball;
   var fireballColor = getFireballColor();
-  config.elements.setup.fireball.style.backgroundColor = fireballColor;
+  while (fireball.style.backgroundColor === fireballColor) {
+    fireballColor = getFireballColor();
+  }
+
+  fireball.style.backgroundColor = fireballColor;
 });
 
 setup();
