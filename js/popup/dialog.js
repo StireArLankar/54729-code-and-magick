@@ -1,11 +1,9 @@
 'use strict';
 
 (function () {
-  var config = window.config;
-  var block = config.elements.setup.root;
-  var handler = config.elements.setup.upload;
+  var dialog = {};
 
-  function onMouseDown(downEvt) {
+  function onMouseDown(downEvt, handler, block, action) {
     downEvt.preventDefault();
     var dragged = false;
     var start = {
@@ -27,8 +25,7 @@
         y: moveEvt.clientY
       };
 
-      block.style.left = (block.offsetLeft - shift.x) + 'px';
-      block.style.top = (block.offsetTop - shift.y) + 'px';
+      action(shift.x, shift.y);
     }
 
     function onMouseUp(upEvt) {
@@ -51,6 +48,13 @@
     document.addEventListener('mouseup', onMouseUp);
   }
 
-  handler.addEventListener('mousedown', onMouseDown);
+  function init(handler, block, action) {
+    handler.addEventListener('mousedown', function (downEvt) {
+      onMouseDown(downEvt, handler, block, action);
+    });
+  }
 
+  dialog.init = init;
+
+  window.dialog = dialog;
 })();
