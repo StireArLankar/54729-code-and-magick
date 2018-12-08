@@ -2,49 +2,55 @@
 
 (function () {
   var config = window.config;
+  var backend = window.backend;
   var utils = window.utils;
   var dialog = window.dialog;
-  var wizardsMock = window.wizardsMock;
+  // var wizardsMock = window.wizardsMock;
+  var wizardsLoad = window.wizardsLoad;
   var wizardsCommon = window.wizardsCommon;
-  var block = config.elements.setup.root;
-  var handler = config.elements.setup.upload;
+  var block = config.elements.setup;
 
-  dialog.init(handler, block, movePopup);
+  dialog.init(block.upload, block.root, movePopup);
 
   function movePopup(x, y) {
-    block.style.left = (block.offsetLeft - x) + 'px';
-    block.style.top = (block.offsetTop - y) + 'px';
+    block.root.style.left = (block.root.offsetLeft - x) + 'px';
+    block.root.style.top = (block.root.offsetTop - y) + 'px';
   }
 
   function openPopup() {
-    config.elements.setup.root.classList.remove('hidden');
-    config.elements.setup.root.style.left = '';
-    config.elements.setup.root.style.top = '';
+    block.root.classList.remove('hidden');
+    block.root.style.left = '';
+    block.root.style.top = '';
     document.addEventListener('keydown', onPopupEscPress);
-    config.elements.setup.similar.classList.remove('hidden');
-    wizardsMock.renderWizards(config.wizardsCount, config.elements.setup.similarList);
+    block.open.removeEventListener('click', openPopup);
+    if (config.wizards.length > 0) {
+      block.similar.classList.remove('hidden');
+      wizardsLoad.renderWizards(config.wizardsCount, block.similarList);
+    }
+    // wizardsMock.renderWizards(config.wizardsCount, block.similarList);
   }
 
   function closePopup() {
-    config.elements.setup.root.classList.add('hidden');
+    block.root.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
+    block.open.addEventListener('click', openPopup);
     wizardsCommon.clearWizards();
-    config.elements.setup.similar.classList.add('hidden');
+    block.similar.classList.add('hidden');
   }
 
   function onPopupEscPress(evt) {
     utils.isEscEvent(evt, closePopup);
   }
 
-  config.elements.setup.open.addEventListener('click', openPopup);
+  block.open.addEventListener('click', openPopup);
 
-  config.elements.setup.open.addEventListener('keydown', function (evt) {
+  block.open.addEventListener('keydown', function (evt) {
     utils.isEnterEvent(evt, openPopup);
   });
 
-  config.elements.setup.close.addEventListener('click', closePopup);
+  block.close.addEventListener('click', closePopup);
 
-  config.elements.setup.close.addEventListener('keydown', function (evt) {
+  block.close.addEventListener('keydown', function (evt) {
     utils.isEnterEvent(evt, closePopup);
   });
 
@@ -52,19 +58,29 @@
     evt.stopPropagation();
   }
 
-  config.elements.setup.input.addEventListener('keydown', function (evt) {
+  block.input.addEventListener('keydown', function (evt) {
     utils.isEscEvent(evt, stopProp);
   });
 
-  config.elements.setup.submit.addEventListener('click', function () {
-    submitForm();
+  block.submit.addEventListener('click', function (evt) {
+    submitForm(evt);
   });
 
-  config.elements.setup.submit.addEventListener('keydown', function (evt) {
+  block.submit.addEventListener('keydown', function (evt) {
     utils.isEnterEvent(evt, submitForm);
   });
 
-  function submitForm() {
-    config.elements.setup.form.submit();
+  function onUpLoad() {
+    closePopup();
+  }
+
+  function onError(response) {
+    config.elements.errorScreen.root.classList.add('error-screen--open');
+    config.elements.errorScreen.root.textContent = response;
+  }
+
+  function submitForm(evt) {
+    backend.upload(config.uploadUrl, new FormData(block.form), onUpLoad, onError);
+    evt.preventDefault();
   }
 })();

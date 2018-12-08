@@ -45,6 +45,24 @@ form
     margin-bottom: 0;
 }
 
+.error-screen
+{
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  text-align: center;
+  background-color: red;
+  padding: 1px;
+  font-size: 15px;
+  display: none;
+}
+
+.error-screen--open
+{
+  display: block;
+}
+
 .hidden
 {
     display: none;
