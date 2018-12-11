@@ -33,11 +33,11 @@
         similar: '.setup-similar',
         similarList: '.setup-similar-list',
         wizardCoat: '.setup-wizard .wizard-coat',
-        coatInput: '[name=coat-color]',
+        coatInput: '[name="coat-color"]',
         wizardEyes: '.setup-wizard .wizard-eyes',
-        eyesInput: '[name=eyes-color]',
+        eyesInput: '[name="eyes-color"]',
         fireball: '.setup-fireball-wrap',
-        fireballInput: '[name=fireball-color]'
+        fireballInput: '[name="fireball-color"]'
       }
     },
     template: {
@@ -49,39 +49,30 @@
     elements: {}
   };
 
-  config.elements = (function () {
-    var obj = {};
-    for (var block in config.selectors) {
-      if (config.selectors.hasOwnProperty(block)) {
-        obj[block] = (function () {
-          var object = {};
-          for (var selector in config.selectors[block]) {
-            if (config.selectors[block].hasOwnProperty(selector)) {
-              object[selector] = document.querySelector(config.selectors[block][selector]);
-            }
-          }
-          return object;
-        })();
-      }
-    }
-    return obj;
-  })();
+  function findBlocks(selectors, action) {
+    var keys = Object.keys(selectors);
+    return keys.reduce(function (obj, key) {
+      obj[key] = action(selectors[key]);
+      return obj;
+    }, {});
+  }
 
-  config.elements.template = (function () {
-    var obj = {};
-    var temp1;
-    var temp2;
-    for (var selector in config.template) {
-      if (config.template.hasOwnProperty(selector)) {
-        temp2 = config.template[selector].cont;
-        temp1 = config.template[selector].root;
-        obj[selector] = document.querySelector(temp1)
-                                .content
-                                .querySelector(temp2);
-      }
-    }
-    return obj;
-  })();
+  function findDOMElements(block) {
+    var keys = Object.keys(block);
+    return keys.map(function (key) {
+      return document.querySelector(block[key]);
+    }).reduce(function (obj, element, i) {
+      obj[keys[i]] = element;
+      return obj;
+    }, {});
+  }
+
+  function findTemplateContent(block) {
+    return document.querySelector(block.root).content.querySelector(block.cont);
+  }
+
+  config.elements = findBlocks(config.selectors, findDOMElements);
+  config.elements.template = findBlocks(config.template, findTemplateContent);
 
   function onLoad(response) {
     config.wizards = response;
