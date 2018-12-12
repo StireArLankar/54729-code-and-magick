@@ -3,7 +3,6 @@
 (function () {
   var wizardsLoad = {};
   var config = window.config;
-  var utils = window.utils;
 
   function renderWizard(item) {
     var wizard = config.elements.template.wizard.cloneNode(true);
@@ -13,17 +12,33 @@
     return wizard;
   }
 
-  function renderWizards(wizardsCount, container) {
+  function renderWizards(wizardsCount, container, coatColor, eyesColor) {
     var fragment = document.createDocumentFragment();
-    var array = config.wizards.slice(0);
-    var item;
-    var temp;
 
-    for (var i = 0; i < wizardsCount; i += 1) {
+    while (container.firstChild) {
+      container.firstChild.remove();
+    }
+
+    var array = config.wizards.map(function (wizard) {
+      var rating = 0;
+      rating = wizard.colorCoat === coatColor ? rating + 2 : rating;
+      rating = wizard.colorEyes === eyesColor ? rating + 1 : rating;
+      wizard.rating = rating;
+      return wizard;
+    }).sort(function (a, b) {
+      return b.rating - a.rating;
+    });
+
+    /* for (var i = 0; i < wizardsCount; i += 1) {
       temp = utils.getRandomNumber(0, array.length - 1);
       item = array.splice(temp, 1)[0];
       fragment.appendChild(renderWizard(item));
+    } */
+
+    for (var i = 0; i < wizardsCount; i += 1) {
+      fragment.appendChild(renderWizard(array[i]));
     }
+
     container.appendChild(fragment);
   }
 

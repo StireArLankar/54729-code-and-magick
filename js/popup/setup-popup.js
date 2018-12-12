@@ -25,7 +25,7 @@
     block.open.removeEventListener('click', openPopup);
     if (config.wizards.length > 0) {
       block.similar.classList.remove('hidden');
-      wizardsLoad.renderWizards(config.wizardsCount, block.similarList);
+      wizardsLoad.renderWizards(config.wizardsCount, block.similarList, block.coatInput.value, block.eyesInput.value);
     }
     // wizardsMock.renderWizards(config.wizardsCount, block.similarList);
   }

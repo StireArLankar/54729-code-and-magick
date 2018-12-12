@@ -7,6 +7,7 @@
     dataUrl: 'https://js.dump.academy/code-and-magick/data',
     uploadUrl: 'https://js.dump.academy/code-and-magick',
     wizardsCount: 4,
+    debounceDelay: 800,
     keyCode: {
       esc: 27,
       enter: 13
